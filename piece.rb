@@ -1,11 +1,10 @@
 class Piece
 attr_reader :color, :board
 attr_accessor :pos
+attr_writer :king
 
-MOVE_DELTA = [
-  [1,1],
-  [-1,1]
-]
+PIECE_MOVE_DELTA = [[1,1], [-1,1]]
+KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
 
   def initialize(color, pos, board)
     @king = false
@@ -19,18 +18,23 @@ MOVE_DELTA = [
     @king
   end
 
+  def render
+    self.king? ? "#{self.color}K" : self.color
+  end
+
   def move_diffs
     moves = []
     x = self.pos[0]
     y = self.pos[1]
 
+    use_delta = self.king? ? KING_MOVE_DELTA : PIECE_MOVE_DELTA
     if self.color == :l
-      MOVE_DELTA.each do |d_x, d_y|
+      use_delta.each do |d_x, d_y|
         new_pos = [d_x + x, d_y + y]
         moves << [d_x,d_y] if self.board.valid_pos?(new_pos)
       end
     else
-      MOVE_DELTA.each do |d_x, d_y|
+      use_delta.each do |d_x, d_y|
         new_pos = [d_x + x, y - d_y]
         moves << [d_x,(-d_y)] if self.board.valid_pos?(new_pos)
       end

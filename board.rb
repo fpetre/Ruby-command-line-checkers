@@ -60,7 +60,7 @@ class Board
     puts "  " + (0..7).to_a.join("   ")
     a = self.board.map.with_index do |row, row_indx|
           "#{row_indx}" + row.map do |square|
-            square ? " #{square.color} " : " * "
+            square ? " #{square.render} " : " * "
           end.join(" ")
         end.join("\n")
         puts a
