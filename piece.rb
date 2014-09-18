@@ -26,6 +26,22 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
     self.king? ? "#{self.color}K" : self.color
   end
 
+  def maybe_promote
+    if self.color == :d
+      if self.pos[1] == 0 # cant do it on one line?
+        self.king = true
+      else
+        return false
+      end
+    else
+      if self.pos[1] == 7
+        self.king = true
+      else
+        return false
+      end
+    end
+  end
+
   def move_diffs
     moves = []
     x = self.pos[0] #oneline
