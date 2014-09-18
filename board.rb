@@ -14,7 +14,6 @@ class Board
     #top pieces
     (0..2).each do |y|
       (0..7).each do |x|
-        # p "light x #{x}, y #{y}"
         Piece.new(:l, [x,y], self) if (x + y + 1) % 2 == 0
       end
     end
@@ -22,7 +21,6 @@ class Board
     #bottom pieces
     (5..7).each do |y|
       (0..7).each do |x|
-        # p "dark x #{x}, y #{y}"
         Piece.new(:d, [x,y], self) if (x + y + 1) % 2 == 0
       end
     end
@@ -33,21 +31,17 @@ class Board
   end
 
   def valid_pos?(pos)
-    (0..7).include?(pos[0]) && (0..7).include?(pos[1])
+    (0..7).include?(pos[0]) && (0..7).include?(pos[1]) # one line .all?
   end
 
   def [](pos)
-    x = pos[0]
-    y = pos[1]
+    x, y = pos
 
     self.board[y][x]
   end
 
   def []=(pos, piece)
-    #p pos
-    #p piece.color
-    x = pos[0]
-    y = pos[1]
+    x, y = pos
 
     self.board[y][x] = piece
   end
@@ -64,6 +58,10 @@ class Board
           end.join(" ")
         end.join("\n")
         puts a
+  end
+
+  def dup
+    new_board = Board.new
   end
 
 

@@ -24,30 +24,34 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
 
   def move_diffs
     moves = []
-    x = self.pos[0]
+    x = self.pos[0] #oneline
     y = self.pos[1]
 
     use_delta = self.king? ? KING_MOVE_DELTA : PIECE_MOVE_DELTA
-    if self.color == :l
-      use_delta.each do |d_x, d_y|
+
+    use_delta.each do |d_x, d_y|
+      if self.color == :l
         new_pos = [d_x + x, d_y + y]
         moves << [d_x,d_y] if self.board.valid_pos?(new_pos)
-      end
-    else
-      use_delta.each do |d_x, d_y|
+      else
         new_pos = [d_x + x, y - d_y]
         moves << [d_x,(-d_y)] if self.board.valid_pos?(new_pos)
       end
     end
+
     moves
   end
 
+  def move!(target)
+    self.board[self.pos] = nil
+    self.board[target] = self
+    self.pos = target
+  end
+
   def perform_slide(target)
-    new_moves = self.move_diffs.collect{|d_x, d_y| [d_x + pos[0], d_y + pos[1]]}
-    return false unless new_moves.include?(target) && board[target].nil?
-      self.board[pos] = nil
-      self.board[target] = self
-      self.pos = target
+    new_moves = self.move_diffs.collect{|d_x, d_y| [d_x + self.pos[0], d_y + self.pos[1]]}
+    return false unless new_moves.include?(target) && self.board[target].nil?
+    self.move!(target)
 
     true
   end
@@ -64,11 +68,8 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
     return false unless jump_moves.include?(target) && board[target].nil?
 
     target_mid_move = self.mid_move(target)
-
-    self.board[pos] = nil
     self.board[target_mid_move] = nil
-    self.board[target] = self
-    self.pos = target
+    self.move!(target)
 
     true
   end
