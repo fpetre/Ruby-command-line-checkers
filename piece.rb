@@ -72,7 +72,7 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
     new_moves = self.move_diffs.collect{|d_x, d_y| [d_x + self.pos[0], d_y + self.pos[1]]}
     return false unless new_moves.include?(target) && self.board[target].nil?
     self.move!(target)
-
+    self.maybe_promote
     true
   end
 
@@ -90,7 +90,7 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
     target_mid_move = self.mid_move(target)
     self.board[target_mid_move] = nil
     self.move!(target)
-
+    self.maybe_promote
     true
   end
 
