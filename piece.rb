@@ -1,3 +1,7 @@
+class InvalidMoveError < StandardError
+end
+
+
 class Piece
 attr_reader :color, :board
 attr_accessor :pos
@@ -6,8 +10,8 @@ attr_writer :king
 PIECE_MOVE_DELTA = [[1,1], [-1,1]]
 KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
 
-  def initialize(color, pos, board)
-    @king = false
+  def initialize(color, pos, board, king = false)
+    @king = king
     @color = color #raise exception if not black or white
     @pos = pos # raise exception if not on board
     @board = board
@@ -81,8 +85,35 @@ KING_MOVE_DELTA = [[1,1], [-1,1], [1,-1], [-1,-1]]
     mid_move = [d_x + self.pos[0], d_y + self.pos[1]]
   end
 
+  def perform_moves!(move_sequence)
+    if move_sequence.count <= 1
+      raise InvalidMoveError, "invalid sequence!" unless self.perform_slide(move_sequence[0]) ||
+      self.perform_jump(move_sequence[0])
+    else
+      move_sequence.each do |target|
+        raise InvalidMoveError, "invalid sequence!" unless self.perform_jump(target)
+      end
+    end
+    nil
+  end
 
+  def valid_move_sequence?(move_sequence)
+    new_board = self.board.dup
+    begin
+      new_board[self.pos].perform_moves!(move_sequence)
+    rescue InvalidMoveError => e
+      return false
+    end
+    true
+  end
 
-
+  def perform_moves(move_sequence)
+    if self.valid_move_sequence?(move_sequence)
+       self.perform_moves!(move_sequence)
+    else
+       raise InvalidMoveError, "invalid sequence!"
+    end
+    nil
+  end
 
 end

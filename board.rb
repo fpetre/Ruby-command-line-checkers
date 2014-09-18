@@ -4,9 +4,9 @@ class Board
 
   attr_accessor :board
 
-  def initialize
+  def initialize(new_board)
     @board = Array.new(8){Array.new(8)}
-    self.set_up_board
+     self.set_up_board if new_board
   end
 
 
@@ -60,8 +60,17 @@ class Board
         puts a
   end
 
+  def pieces
+    self.board.flatten.compact
+  end
+
+
   def dup
-    new_board = Board.new
+    new_board = Board.new(false)
+    pieces.each do |piece|
+      piece.class.new(piece.color, piece.pos, new_board, piece.king?)
+    end
+    new_board
   end
 
 
